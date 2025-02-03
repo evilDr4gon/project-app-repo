@@ -8,19 +8,15 @@ pipeline {
     }
 
     stages {
-        stage('Preparar Entorno') {
-            steps {
-                script {
-                    // Configura el directorio como seguro para Git
-                    sh 'git config --global --add safe.directory /home/jenkins/agent/workspace/temp'
-                }
-            }
-        }
-
         stage('Construir Imagen Docker') {
             steps {
                 container('dind') {
                     script {
+                        // Configura el directorio como seguro dentro del contenedor
+                        sh '''
+                        git config --global --add safe.directory /home/jenkins/agent/workspace/temp
+                        '''
+
                         // Obtén el short SHA del commit actual
                         def shortSha = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
                         echo "Commit Short SHA: ${shortSha}"
