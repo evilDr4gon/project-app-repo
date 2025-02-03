@@ -1,4 +1,3 @@
-
 pipeline {
     agent {
         label 'jenkinsv2-jenkins-agent'
@@ -9,6 +8,15 @@ pipeline {
     }
 
     stages {
+        stage('Preparar Entorno') {
+            steps {
+                script {
+                    // Configura el directorio como seguro para Git
+                    sh 'git config --global --add safe.directory /home/jenkins/agent/workspace/temp'
+                }
+            }
+        }
+
         stage('Construir Imagen Docker') {
             steps {
                 container('dind') {
