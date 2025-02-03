@@ -8,29 +8,23 @@ pipeline {
     }
 
     stages {
-        stage('Clonar Repositorio') {
-            steps {
-                withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
-                    sh '''
-                    git config --global credential.helper 'cache --timeout=3600'
-                    git config --global user.name "jenkins"
-                    git config --global user.email "jenkins@example.com"
-                    git clone https://$GITHUB_TOKEN@github.com/evilDr4gon/project-app-repo.git .
-                    '''
-                }
-            }
-        }
-
         stage('Construir Imagen Docker') {
             steps {
                 container('dind') {
-                    sh '''
-                    echo "🐳 Construyendo imagen Docker..."
-                    docker build -t mi-quarkus-app:latest .
+                    script {
+                        // Obtén el short SHA del commit actual
+                        def shortSha = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                        echo "Commit Short SHA: ${shortSha}"
 
-                    echo "📸 Listando imágenes Docker..."
-                    docker images
-                    '''
+                        // Construye la imagen Docker con el tag del SHA
+                        sh """
+                        echo "🐳 Construyendo imagen Docker con tag: ${shortSha}..."
+                        docker build -t mi-quarkus-app:${shortSha} .
+                        docker build -t mi-quarkus-app:latest .
+                        """
+
+                        echo "✅ Imagen Docker construida con tag: ${shortSha}"
+                    }
                 }
             }
         }
