@@ -1,4 +1,4 @@
-# prueba
+# prueba a mi amigo
 FROM vegardit/graalvm-maven:latest-java21 AS graalvm
 
 COPY . /app
