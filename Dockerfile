@@ -1,3 +1,4 @@
+# prueba
 FROM vegardit/graalvm-maven:latest-java21 AS graalvm
 
 COPY . /app
