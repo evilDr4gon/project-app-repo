@@ -19,6 +19,7 @@ pipeline {
 
                         // Obtén el short SHA del commit actual
                         def shortSha = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                        echo "⚠️ ESTA ES LA RAMA DEV ⚠️"
                         echo "Commit Short SHA: ${shortSha}"
 
                         // Define variables para el nombre de la imagen y el registro
@@ -26,9 +27,9 @@ pipeline {
 
                         // Construye la imagen Docker con las etiquetas
                         sh """
-                        echo "🐳 Construyendo imagen Docker con tag: ${shortSha}..."
-                        docker build -t ${imageName}:${shortSha} .
-                        docker build -t ${imageName}:latest .
+                        echo "🐳 Construyendo imagen Docker en DEV con tag: ${shortSha}..."
+                        docker build -t ${imageName}:${shortSha}-dev .
+                        docker build -t ${imageName}:dev-latest .
                         """
 
                         // Loguearse al registro
@@ -38,12 +39,12 @@ pipeline {
 
                         // Subir la imagen al registro
                         sh """
-                        echo "📤 Subiendo imagen Docker al registro..."
-                        docker push ${imageName}:${shortSha}
-                        docker push ${imageName}:latest
+                        echo "📤 Subiendo imagen Docker de DEV al registro..."
+                        docker push ${imageName}:${shortSha}-dev
+                        docker push ${imageName}:dev-latest
                         """
 
-                        echo "✅ Imagen Docker subida al registro con éxito"
+                        echo "✅ Imagen Docker subida al registro con éxito (DEV)"
                     }
                 }
             }
