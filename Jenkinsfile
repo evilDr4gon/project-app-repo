@@ -9,7 +9,6 @@ pipeline {
 
     stages {
         stage('Clonar Repositorio') {
-            when { branch 'main' } // Solo ejecuta este stage en la rama "main"
             steps {
                 withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
                     sh '''
@@ -23,7 +22,6 @@ pipeline {
         }
 
         stage('Construir Imagen Docker') {
-            when { branch 'main' } // Solo ejecuta este stage en "main"
             steps {
                 container('dind') {
                     sh '''
@@ -38,3 +36,4 @@ pipeline {
         }
     }
 }
+
